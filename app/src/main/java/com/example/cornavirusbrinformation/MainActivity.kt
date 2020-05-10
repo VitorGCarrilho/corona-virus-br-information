@@ -3,9 +3,11 @@ package com.example.cornavirusbrinformation
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import com.example.cornavirusbrinformation.gateway.ApiCountryRestClient
 import com.example.cornavirusbrinformation.model.Country
 import com.example.cornavirusbrinformation.network.RetrofitEventListener
@@ -22,45 +24,38 @@ class MainActivity : AppCompatActivity() {
     private val dateFormatter = DateTimeFormatter.ofPattern(dateFormat)
 
     private lateinit var shimmerFrameLayout: ShimmerFrameLayout;
+    private lateinit var linerLayout: LinearLayout;
+    private lateinit var carView: CardView;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         shimmerFrameLayout = findViewById<ShimmerFrameLayout>(R.id.main_Shimmer)
-        findViewById<TextView>(R.id.txtDate)
-            .setText(dateFormatter.format(LocalDate.now()))
+        linerLayout = findViewById<LinearLayout>(R.id.linear_layout)
+        carView = findViewById<CardView>(R.id.card_view)
+        linerLayout.removeView(carView)
+
         callCountryApi(this.applicationContext)
-    }
-
-    override fun onResume() {
-        if (shimmerFrameLayout!=null) {
-            shimmerFrameLayout.startShimmer()
-        }
-        super.onResume()
-    }
-
-    override fun onPause() {
-
-        if (shimmerFrameLayout!=null) {
-            shimmerFrameLayout.stopShimmer()
-        }
-        super.onPause()
     }
 
     internal fun callCountryApi(context: Context) {
 
-        ApiCountryRestClient.instance.getUserList( object : RetrofitEventListener {
+        ApiCountryRestClient.instance.getCountryInformation( object : RetrofitEventListener {
             override  fun onSuccess(call: Call<*>, response: Any) {
-                assignValueToTextViews(response)
+               assignValueToTextViews(response)
             }
 
             override fun onError(call: Call<*>, t: Throwable) {
+                shimmerFrameLayout.stopShimmer()
                 Toast.makeText(context, "Erro ao baixar dados, tente novamente mais tarde", Toast.LENGTH_LONG).show();
             }
         })
     }
 
     private fun assignValueToTextViews(response: Any) {
+        shimmerFrameLayout.stopShimmer()
+        linerLayout.removeView(shimmerFrameLayout)
+        linerLayout.addView(carView)
         if (response is Country) {
             Log.d("request success", "${response.countryData}"  )
 
@@ -83,6 +78,9 @@ class MainActivity : AppCompatActivity() {
 
             findViewById<TextView>(R.id.txtValLastUpdate)
                 .text = "${response.countryData?.updatedAt}"
+
+            findViewById<TextView>(R.id.txtDate)
+                .text = dateFormatter.format(LocalDate.now())
 
         }
     }

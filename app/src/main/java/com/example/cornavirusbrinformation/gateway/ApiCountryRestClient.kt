@@ -16,7 +16,7 @@ class ApiCountryRestClient {
 
     private var apiCountry : ApiCountry? = null
 
-    fun getUserList(retrofitEventListener: RetrofitEventListener) {
+    fun getCountryInformation(retrofitEventListener: RetrofitEventListener) {
         val retrofit = NetworkClient.retrofitClient
         apiCountry = retrofit.create<ApiCountry>(ApiCountry::class.java)
 

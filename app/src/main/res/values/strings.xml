@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">COVID-19 Brasil</string>
+    <string name="country">Brasil</string>
+    <string name="strPopulation">População:</string>
+    <string name="strConfirmed">Confirmados:</string>
+    <string name="strRecoverd">Recuperados:</string>
+    <string name="strLastUpdate">Última atualização: "</string>
+    <string name="strCritical">Criticos:</string>
+    <string name="strDeths">"Mortos: "</string>
+</resources>
